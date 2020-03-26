@@ -1,20 +1,17 @@
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading" [color]="'primary'"></mat-progress-bar>
+
 <mat-form-field class="search-bar">
-  <input matInput placeholder="Search..." [formControl]="searchControl"/>
+    <input matInput placeholder="Search..." (input)="search()" [(ngModel)]="searchTerm" />
+    <h5 *ngIf="filteredItems?.length > 0">{{filteredItems?.length}} Items</h5>
 </mat-form-field>
 
 <div class="results">
-  <!-- Example result format -->
-  <mat-card class="result">
-    <img mat-card-md-image src="../../../assets/cat.jpg" />
-    <div>
-      <mat-card-title>RSS Feed Item Example</mat-card-title>
-      <mat-card-content>Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus dignissimos porro corporis voluptatibus. Doloremque aperiam aliquid rem sit amet corporis nisi quisquam cum adipisci repellat, esse iste, blanditiis distinctio minima?</mat-card-content>
-    </div>
-  </mat-card>
-  <mat-card class="result">
-    <div>
-      <mat-card-title>RSS Feed Item Example With No Image</mat-card-title>
-      <mat-card-content>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Provident, repellat in. Veniam nisi eaque similique repellat quas amet at nemo incidunt quae officia qui soluta animi, alias tenetur eos eum.</mat-card-content>
-    </div>
-  </mat-card>
+    <mat-card class="result" *ngFor="let item of filteredItems">
+        <img *ngIf="item.thumbnail" mat-card-md-image src="{{item.thumbnail}}" />
+        <div>
+            <mat-card-title>{{item.title}}</mat-card-title>
+            <mat-card-subtitle>{{item.pubDate | date : 'dd/MM/yyyy HH:mm'}}</mat-card-subtitle>
+            <mat-card-content [innerHTML]="item.content"></mat-card-content>
+        </div>
+    </mat-card>
 </div>
