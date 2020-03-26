@@ -1,0 +1,12 @@
+<form class="new-feed-container" (ngSubmit)="submit()">
+  <mat-form-field><input matInput placeholder="RSS Feed Name..." name="name"/></mat-form-field>
+  <mat-form-field><input matInput placeholder="RSS Feed Url..." name="url"/></mat-form-field>
+  <button type="submit" mat-stroked-button color="primary">+ Add</button>
+</form>
+
+<section class="rss-feeds">
+  <!-- Available RSS feeds -->
+  <mat-card class="feed">
+    <span>Example Feed</span> <i class="fa fa-trash-alt"></i>
+  </mat-card>
+</section>
