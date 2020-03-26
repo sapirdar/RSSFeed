@@ -1,7 +1,8 @@
 <form class="new-feed-container" (ngSubmit)="submit()">
     <mat-form-field><input matInput placeholder="RSS Feed Name..." name="name" [(ngModel)]="name" /></mat-form-field>
     <mat-form-field><input matInput placeholder="RSS Feed Url..." name="url" [(ngModel)]="url" /></mat-form-field>
-    <button type="submit" mat-stroked-button color="primary">+ Add</button>
+    <button type="submit" mat-stroked-button color="primary" [disabled]="!(name?.length > 0 && url?.length > 0)">
+        + Add</button>
 </form>
 
 <section class="rss-feeds">

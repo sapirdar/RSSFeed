@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  rssToJsonBaseUrl: 'https://api.rss2json.com/v1/api.json?rss_url='
 };
 
 /*

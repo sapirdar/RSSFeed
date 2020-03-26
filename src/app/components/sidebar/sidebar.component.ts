@@ -35,9 +35,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    this.rssFeedsService.addFeed(this.url, this.name);
-    this.url = null;
-    this.name = null;
+    if (this.url && this.name && this.url.trim().length > 0 && this.name.trim().length > 0) {
+      this.rssFeedsService.addFeed(this.url, this.name);
+      this.url = null;
+      this.name = null;
+    }
   }
 
   delete(url: string) {

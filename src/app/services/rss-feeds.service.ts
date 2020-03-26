@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Feed } from '../models/feed';
 import { ResultsInterface } from '../models/results.interface';
+import { LocalStorageService } from './local-storage.service';
+import { environment } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
@@ -19,11 +21,21 @@ export class RssFeedsService {
   private isLoading = false;
   isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  private rssToJsonBaseUrl = 'https://api.rss2json.com/v1/api.json?rss_url=';
+  private rssToJsonBaseUrl = environment.rssToJsonBaseUrl;
 
   constructor(
     private http: HttpClient,
+    private localStorageService: LocalStorageService
   ) {
+    this.init();
+  }
+
+  init() {
+    this.feedList = this.localStorageService.getFeedList();
+    if (this.feedList.length > 0) {
+      this.feedList$.next(this.feedList);
+      this.feedList.filter(feed => feed.selected === true).forEach(feed => this.getFeedContent(feed));
+    }
   }
 
   addFeed(url: string, name: string) {
@@ -71,6 +83,25 @@ export class RssFeedsService {
   private _addItem(item: Feed) {
     this.feedList = [...this.feedList, item];
     this.feedList$.next(this.feedList);
+    this.localStorageService.setFeedList(this.feedList);
+  }
+
+  private _deleteItem(url: string) {
+    this.feedList = this.feedList.filter((i) => i.url !== url);
+    this.feedList$.next(this.feedList);
+    this.localStorageService.setFeedList(this.feedList);
+  }
+
+  private _setSelected(item: Feed, isSelected: boolean) {
+    item.selected = isSelected;
+    this._modifyItem(item);
+    this.localStorageService.setFeedList(this.feedList);
+  }
+
+  private _modifyItem(item: Feed) {
+    const ind = this.feedList.findIndex(i => i.name === item.name);
+    this.feedList[ind] = item;
+    this.feedList$.next(this.feedList);
   }
 
   private _addContent(content: ResultsInterface) {
@@ -81,22 +112,6 @@ export class RssFeedsService {
   private _deleteContent(url: string) {
     this.contentList = this.contentList.filter((i) => i.feed.url !== url);
     this.contentList$.next(this.contentList);
-  }
-
-  private _deleteItem(url: string) {
-    this.feedList = this.feedList.filter((i) => i.url !== url);
-    this.feedList$.next(this.feedList);
-  }
-
-  private _setSelected(item: Feed, isSelected: boolean) {
-    item.selected = isSelected;
-    this._modifyItem(item);
-  }
-
-  private _modifyItem(item: Feed) {
-    const ind = this.feedList.findIndex(i => i.name === item.name);
-    this.feedList[ind] = item;
-    this.feedList$.next(this.feedList);
   }
 
   private _setLoading(isLoading: boolean) {
